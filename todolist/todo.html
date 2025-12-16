@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Todoro</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #24585f;
+            padding: 20px;
+        }
+        .box {
+            background: rgb(81, 167, 232);
+            padding: 20px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0 0 5px #999;
+        }
+        input {
+            width: 85%;
+            padding: 8px;
+            font-size: 15px;
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        li {
+            padding: 8px;
+            background: #eee;
+            margin-top: 5px;
+            border-radius: 5px;
+        }
+        .removeBtn {
+            float: right;
+            background: crimson;
+            padding: 3px 6px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Todoro</h2>
+
+    <input id="taskInput" placeholder="Enter a new task" />
+    <button onclick="addFromUI()">Add Task</button>
+
+    <h3>Your Tasks</h3>
+    <ul id="todoList"></ul>
+</div>
+
+<!-- ✅ IMPORTANT: DEFINE MODULE FIRST -->
+<script>
+var Module = {
+    onRuntimeInitialized() {
+        console.log("✅ WASM Ready");
+        refreshList();
+    }
+};
+</script>
+
+<script src="todo.js"></script>
+
+<script>
+function addFromUI() {
+    let input = document.getElementById("taskInput");
+    let task = input.value.trim();
+    if (task === "") return;
+
+    Module.addTask(task);
+    input.value = "";
+    refreshList();
+}
+
+function refreshList() {
+    let ul = document.getElementById("todoList");
+    ul.innerHTML = "";
+
+    let count = Module.getCount();
+
+    for (let i = 0; i < count; i++) {
+        let text = Module.getText(i);
+        let done = Module.isDone(i);
+
+        let li = document.createElement("li");
+        li.style.textDecoration = done ? "line-through" : "none";
+
+        let checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = done;
+        checkbox.onclick = () => {
+            Module.toggleTask(i);
+            refreshList();
+        };
+
+        let span = document.createElement("span");
+        span.innerText = " X";
+        span.className = "removeBtn";
+        span.onclick = () => {
+            Module.deleteTask(i);
+            refreshList();
+        };
+
+        li.appendChild(checkbox);
+        li.append(" " + text);
+        li.appendChild(span);
+        ul.appendChild(li);
+    }
+}
+</script>
+
+
+</body>
+</html>

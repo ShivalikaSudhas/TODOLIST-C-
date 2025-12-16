@@ -1,0 +1,18 @@
+{
+  "configurations": [
+    {
+      "name": "Emscripten",
+      "includePath": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/**",
+        "C:/emsdk/upstream/emscripten/cache/sysroot/include"
+      ],
+      "compilerPath": "C:/emsdk/upstream/emscripten/emcc.bat",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-gcc-x64"
+    }
+  ],
+  "version": 4
+}
+
